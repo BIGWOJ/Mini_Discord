@@ -23,7 +23,7 @@
           {%csrf_token%}
 
           <div class="form__group">
-            <label for="room_topic">Topic</label>
+            <label for="room_topic">Room topic</label>
             <input required type="text" value="{{room.topic.name}}" name="topic" list="topic-list" />
             <datalist id="topic-list">
               <select id="room_topic">
@@ -43,6 +43,7 @@
             <label for="room_description">Room description</label>
             {{form.description}}
           </div>
+
 
           <!-- <div class="form__group">
             <label for="room_topic">Topic</label>

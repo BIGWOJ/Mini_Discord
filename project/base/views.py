@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from .models import Room, Topic, Message
-from .forms import Room_form
+from .forms import Room_form, User_form
 
 # Create your views here.
 
@@ -131,6 +131,8 @@ def create_room(request):
     if request.method == 'POST':
         topic_name = request.POST.get('topic')
         # get_or_create -> if topic exists, get it, if not create it
+        # topic -> topic object
+        # created -> boolean value, if topic was created, created = True
         topic, created = Topic.objects.get_or_create(name=topic_name)
         Room.objects.create(
             host = request.user,
@@ -160,10 +162,25 @@ def update_room(request, pk):
         topic_name = request.POST.get('topic')
         topic, created = Topic.objects.get_or_create(name=
         topic_name)
+        # print(topics)
+        # print(f'{room.topic} {topics.filter(name=room.topic).count()}')
+        # print(f'{topic} {topics.filter(name=topic).count()}')
+        # print(f'test nowy {topics.filter(name='test nowy').count()}')
+        # if room.topic != topic:
+
+
         room.name = request.POST.get('name')
         room.topic = topic
         room.description = request.POST.get('description')
+        
+        
         room.save()
+        # if created and :
+        # if created:
+        #     print(f'Topic "{topic_name}" was created and assigned to the room.')
+        # else:
+        #     print(f'Topic "{topic_name}" was assigned to the room.')
+        
         return redirect('home')
 
     context = {'form': form, 'topics': topics, 'room': room}
@@ -198,3 +215,17 @@ def delete_message(request, pk):
 
     context = {'obj': message}
     return render(request, 'base/delete.html', context)
+
+@login_required(login_url='login')
+def update_user(request):
+    user = request.user
+    form = User_form(instance=user)
+
+    if request.method == "POST":
+        form = User_form(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('user_profile', pk=user.id)
+
+    context = {'form': form}
+    return render(request, 'base/update_user.html', context)
