@@ -9,14 +9,6 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Room, Topic, Message
 from .forms import Room_form, User_form
 
-# Create your views here.
-
-# rooms = [
-#     {'id': 1, 'name': 'Lets learn python'},
-#     {'id': 2, 'name': 'Design with me'},
-#     {'id': 3, 'name': 'Frontend developers'},
-# ]
-
 def login_page(request):
     page = 'login'
     # If user is already logged in, redirect to home page from login page
@@ -146,7 +138,6 @@ def create_room(request):
     context = {'form': form, 'topics': topics}
     return render(request, 'base/room_form.html', context)
 
-#Redirecting to login page if user is not logged in
 @login_required(login_url='login')
 def update_room(request, pk):
     #found room based on primary key
