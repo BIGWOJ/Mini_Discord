@@ -1,1 +1,2 @@
 1. w update_room views.py zmienić, żeby podczas zmiany tematu jeżeli zmieniony temat nie będzie mieć pokojów już, to usunąć go z bazy, żeby nie wyświetlał się po lewej stronie
+2. pozmieniać wszędzie avatary gdzie się pojawiają
