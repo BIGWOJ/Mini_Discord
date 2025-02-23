@@ -1,18 +1,13 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db.models import Q
-# Using build in user model
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-
-# Built in UserCreationForm for creating new users
-# from django.contrib.auth.forms import UserCreationForm
-
-# Adding User model after changing to using own User model
-from .models import Room, Topic, Message, User
-from .forms import Room_form, User_form, My_User_Creation_Form
+from django.contrib.auth.forms import UserCreationForm
+from .models import Room, Topic, Message
+from .forms import Room_form, User_form
 
 def login_page(request):
     page = 'login'
@@ -21,15 +16,15 @@ def login_page(request):
         return redirect('home')
 
     if request.method == 'POST':
-        email = request.POST.get('email')
+        username = request.POST.get('username')
         password = request.POST.get('password')
 
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(username=username)
         except:
             messages.error(request, 'User does not exist')
 
-        user = authenticate(request, email=email, password=password)
+        user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
@@ -45,14 +40,11 @@ def logout_user(request):
     return redirect('home')
 
 def register_page(request):
-    # Changing to own User model
-    # form = UserCreationForm()
-    form = My_User_Creation_Form()
-
+    form = UserCreationForm()
     context = {'form': form}
 
     if request.method == 'POST':
-        form = My_User_Creation_Form(request.POST)
+        form = UserCreationForm(request.POST)
         if form.is_valid():
             # Commit=false -> not saving to database yet, firstly clearing up data and logging up on the page
             user = form.save(commit=False)
@@ -221,8 +213,7 @@ def update_user(request):
     form = User_form(instance=user)
 
     if request.method == "POST":
-        # request.FILES -> for image upload (avatar)
-        form = User_form(request.POST, request.FILES, instance=user)
+        form = User_form(request.POST, instance=user)
         if form.is_valid():
             form.save()
             return redirect('user_profile', pk=user.id)

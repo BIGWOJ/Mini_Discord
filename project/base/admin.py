@@ -2,10 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import Room, Topic, Message, User
-
-# Registering user after adding own User model
-admin.site.register(User)
+from .models import Room, Topic, Message
 
 admin.site.register(Room)
 admin.site.register(Topic)

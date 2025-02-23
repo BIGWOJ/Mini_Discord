@@ -19,8 +19,7 @@
         </div>
       </div>
       <div class="layout__body">
-        <!-- enctype was added after start using custom User model and option of adding avatar -->
-        <form class="form" action="" method="POST" enctype="multipart/form-data">
+        <form class="form" action="" method="POST">
           {%csrf_token%}
 
           {%for field in form%}
