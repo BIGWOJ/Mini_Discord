@@ -58,6 +58,8 @@ def register_page(request):
             # Commit=false -> not saving to database yet, firstly clearing up data and logging up on the page
             user = form.save(commit=False)
             user.username = user.username
+            if not user.bio:
+                user.bio = "Write something about you!"
             user.save()
             login(request, user)
             return redirect('home')
@@ -86,7 +88,7 @@ def home(request):
     # Getting first 5 topics
     topics = Topic.objects.all()[0:5]
     room_count = rooms.count()
-    room_messages = Message.objects.all().filter(Q(room__topic__name__icontains=query))
+    room_messages = Message.objects.all().filter(Q(room__topic__name__icontains=query))[0:5]
     
     context = {'rooms': rooms, 'topics': topics, 'room_count': room_count, 'room_messages': room_messages}
     return render(request, 'base/home.html', context)
@@ -225,7 +227,10 @@ def update_user(request):
         # request.FILES -> for image upload (avatar)
         form = User_form(request.POST, request.FILES, instance=user)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            if not user.bio:
+                user.bio = "Write something about you!"
+            user.save()
             return redirect('user_profile', pk=user.id)
 
     context = {'form': form}
@@ -241,6 +246,6 @@ def topics_page(request):
     return render(request, 'base/topics.html', context)
 
 def activity_page(request):
-    room_messages = Message.objects.all()
+    room_messages = Message.objects.all()[:5]
     context = {"room_messages": room_messages}
     return render(request, 'base/activity.html', context)
